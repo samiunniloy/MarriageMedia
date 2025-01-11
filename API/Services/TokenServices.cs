@@ -1,6 +1,13 @@
-﻿namespace API.Services
+﻿using API.Entities;
+using API.Interfaces;
+
+namespace API.Services
 {
-    public class TokenServices
+    public class TokenServices : ITokenService
     {
+        public string CreateToken(AppUser )
+        {
+            throw new NotImplementedException();
+        }
     }
 }
