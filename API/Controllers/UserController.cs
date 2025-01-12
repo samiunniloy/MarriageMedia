@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,7 @@ namespace API.Controllers
             var users = await context.Users.ToListAsync();
             return Ok(users);
         }
-
+        [Authorize]
         [HttpGet("{id:int}")] //api/users/id
         // {id } er jnno dynamic route use kora jay na dile dynamic route hoy na 
         public async Task<ActionResult<AppUser>> GetUser(int id)
