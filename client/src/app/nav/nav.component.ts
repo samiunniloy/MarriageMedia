@@ -1,12 +1,16 @@
 import { Component } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-nav',
   standalone: true,
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.css'
 })
 export class NavComponent {
-
+  model: any = {};
+  login(){
+    console.log(this.model);
+  }
 }
