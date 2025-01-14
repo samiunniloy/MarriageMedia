@@ -23,11 +23,18 @@ export class AppComponent implements  OnInit{
     this.setCurrentUser();
   }
 
+
+
   setCurrentUser() {
     const userString = localStorage.getItem('user');
-    if (!userString) return;
+    if (!userString) {
+      console.log('No user found in localStorage');
+      return;
+    }
     const user = JSON.parse(userString);
+    //console.log('User from localStorage:', user);  // Log the user
     this.accountService.currentUser.set(user);
+    console.log('Current user after ngOnInit:', this.accountService.currentUser());
   }
 
   getUsers() {
@@ -37,5 +44,4 @@ export class AppComponent implements  OnInit{
       complete: () => console.log('Request has completed')
     })
   }
-
 }

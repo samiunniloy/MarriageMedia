@@ -7,19 +7,22 @@ import { map } from 'rxjs';
   providedIn: 'root'
 })
 export class AccountService {
-  private http = inject(HttpClient); 
+ //  http = inject(HttpClient); 
+  http = inject(HttpClient); 
   baseUrl = 'https://localhost:7198/api/';
   currentUser = signal<User | null>(null);
   login(model: any) {
     return this.http.post<User>(this.baseUrl + 'account/login', model).pipe(
       map(user => {
         localStorage.setItem('user', JSON.stringify(user));
+       
         this.currentUser.set(user);
+        //console.log(this.currentUser());
       })
     )
   }
   logout() {
-    localStorage.getItem('user');
+    localStorage.removeItem('user');
     this.currentUser.set(null);
   }
 }
