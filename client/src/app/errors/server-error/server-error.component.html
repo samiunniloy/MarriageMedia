@@ -1,0 +1,15 @@
+<h4>Internal Server Error</h4>
+@if(error){
+    <h5 class="text-danger">
+        Error:{{error.message}}
+    </h5>
+    <p class="font-weight-bold">Note: If you are seeing this Code is not blame!</p>
+    <p>What to do next?</p>
+    <ol>
+        <li>check network</li>
+        <li>Check Url</li>
+        <li>reProduce error in postman</li>
+    </ol>
+    <p class="font weight-bold">Folloing the stack -trace</p>
+    <code class="mt-5" style="background-color: whitesmoke;">{{error.details}}</code>
+}
