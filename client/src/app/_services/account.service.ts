@@ -9,7 +9,7 @@ import { map } from 'rxjs';
 export class AccountService {
  //  http = inject(HttpClient); 
   http = inject(HttpClient); 
-  baseUrl = 'https://localhost:7198/api/';
+  baseUrl = 'http://localhost:5126/api/';
   currentUser = signal<User | null>(null);
   login(model: any) {
     return this.http.post<User>(this.baseUrl + 'account/login', model).pipe(

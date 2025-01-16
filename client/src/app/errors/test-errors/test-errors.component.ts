@@ -9,7 +9,7 @@ import { Component, inject } from '@angular/core';
   styleUrl: './test-errors.component.css'
 })
 export class TestErrorsComponent {
-  baseUrl = 'https://localhost:7198/api/';
+  baseUrl = 'http://localhost:5126/api/'; 
   private http = inject(HttpClient);
 
   get400Error() {
@@ -31,7 +31,13 @@ export class TestErrorsComponent {
     })
   }
   get500Error() {
-    this.http.get(this.baseUrl + 'buggy/register', {}).subscribe({
+    this.http.get(this.baseUrl + 'buggy/server-error').subscribe({
+      next: response => console.log(response),
+      error: error => console.log(error)
+    })
+  }
+  get401ValidationError() {
+    this.http.get(this.baseUrl + 'account/register', {}).subscribe({
       next: response => console.log(response),
       error: error => console.log(error)
     })

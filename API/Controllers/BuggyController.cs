@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class BuggyController(DataContext context) : BaseApiController
+    public class buggyController(DataContext context) : BaseApiController
     {
       //  [Authorize]
         [HttpGet("auth")]
@@ -26,14 +26,14 @@ namespace API.Controllers
         [HttpGet("server-error")]
         public ActionResult<AppUser> GetServerError()
         {
-            try {
+           // try {
                 var thing = context.Users.Find(-1) ?? throw new Exception("A bad thing has happen");
                 return thing;
-            }
-            catch
-            {
-                return StatusCode(500, "Computer says no!");
-            }
+            //}
+            //catch
+            //{
+            //    return StatusCode(500, "Computer says no!");
+            //}
 
            
         }
