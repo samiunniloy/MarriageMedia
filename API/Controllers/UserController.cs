@@ -18,6 +18,7 @@ namespace API.Controllers
             //Ienumerable<AppUser> er jaygay List<AppUser> o use kora jay
             //IEnumerable array type er jnno use hoy
             var users = await context.Users.ToListAsync();
+            Console.WriteLine("oikkkkk");
             return Ok(users);
         }
       //  [Authorize]

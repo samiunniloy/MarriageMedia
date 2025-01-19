@@ -5,19 +5,19 @@ using System.Text;
 using System.Text.Json;
 
 namespace API.Data
-{
+{ 
     public class Seed
     {
         public static async Task SeedUsers(DataContext context)
         {
             if (await context.Users.AnyAsync()) return;
 
-            var userData = await System.IO.File.ReadAllTextAsync("\"C:\\Users\\samiun\\MarriageMedia\\API\\Data\\UserSeedData.json\"");
-            var options=new JsonSerializerOptions
+            var userData = await File.ReadAllTextAsync("Data/UserSeedData.json");
+            var options =new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
-            var users = JsonSerializer.Deserialize<List<AppUser>>(userData,options);
+            var users = JsonSerializer.Deserialize<List<AppUser>>(userData, options);
             if(users==null) return;
             foreach (var user in users)
             {
