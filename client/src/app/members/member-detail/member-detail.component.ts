@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+ import { Component, OnInit, inject } from '@angular/core';
 import { MembersService } from '../../_services/members.service';
 import { ActivatedRoute } from '@angular/router';
 import { Member } from '../../_models/member';

@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Member } from '../_models/member';
+import { MemberUpdateDto } from '../_models/MemberUpdateDto';
 
 @Injectable({
   providedIn: 'root'
@@ -17,9 +18,9 @@ export class MembersService {
   getMember(username: string) {
     return this.http.get<Member>(`${this.baseUrl}User/username?username=${username}`);
   }
-  updateMember(member: Member) {
-    console.log(member);
-    return this.http.put(`${this.baseUrl}User`, member);
+  updateMember(member: MemberUpdateDto) {
+  //  console.log(member);
+    return this.http.put(this.baseUrl+'User', member);
   }
 
   //getHttpOptions() {

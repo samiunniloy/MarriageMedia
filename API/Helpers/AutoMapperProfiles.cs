@@ -13,7 +13,8 @@ namespace API.Helpers
                  .ForMember(d => d.PhotoUrl, o => o.MapFrom(
                   s => s.Photos.FirstOrDefault(x => x.IsMain)!.Url));
 
-            CreateMap<MemberUpdateDto, AppUser>();
+            CreateMap<MemberUpdateDto, AppUser>().ReverseMap();
+
         }
     }
 }

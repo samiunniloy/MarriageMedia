@@ -12,7 +12,7 @@ using System.Security.Claims;
 namespace API.Controllers
 {
   
-    [Authorize]
+   // [Authorize]
     public class UserController(IUserRepository userRepository, IMapper mapper) : BaseApiController
     {
         [HttpGet]
@@ -43,6 +43,7 @@ namespace API.Controllers
             var user = await userRepository.GetUserByUsernameAsync(username);
             if (user == null) return BadRequest("CouldNot Find user");
             mapper.Map(memberUpdateDto, user);
+           // Console.WriteLine(user);
             userRepository.update(user);
             if (await userRepository.SaveAllAsync()) return NoContent();
             return BadRequest("Failed to update user");
