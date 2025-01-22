@@ -10,6 +10,7 @@ import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { preventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
+import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -24,8 +25,10 @@ export const routes: Routes = [
         path: 'members/:username', component: MemberDetailComponent,
         canDeactivate: [preventUnsavedChangesGuard]
       },
+      { path: 'members/photos', component: PhotoEditorComponent },
       { path: 'lists', component: ListsComponent },
       { path: 'messages', component: MessagesComponent },
+
     ]
   },
   { path: 'errors', component: TestErrorsComponent },

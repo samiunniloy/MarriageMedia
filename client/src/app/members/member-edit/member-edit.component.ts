@@ -6,11 +6,13 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { MemberUpdateDto } from '../../_models/MemberUpdateDto';
+import { PhotoEditorComponent } from '../photo-editor/photo-editor.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-member-edit',
   standalone: true,
-  imports: [TabsModule, FormsModule],
+  imports: [TabsModule, FormsModule,PhotoEditorComponent,CommonModule],
   template: `
     @if(member){
     <div class="row">
@@ -90,7 +92,7 @@ import { MemberUpdateDto } from '../../_models/MemberUpdateDto';
             </form>
           </tab>
           <tab heading="Edit Photos">
-            <p>Photo editing will go here</p>
+           <app-photo-editor [member]="member"></app-photo-editor>
           </tab>
         </tabset>
       </div>
