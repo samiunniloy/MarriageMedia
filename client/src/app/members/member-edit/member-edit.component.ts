@@ -92,7 +92,7 @@ import { CommonModule } from '@angular/common';
             </form>
           </tab>
           <tab heading="Edit Photos">
-           <app-photo-editor [member]="member"></app-photo-editor>
+           
           </tab>
         </tabset>
       </div>
