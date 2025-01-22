@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Member } from '../_models/member';
 import { MemberUpdateDto } from '../_models/MemberUpdateDto';
@@ -11,9 +11,12 @@ export class MembersService {
 
   private http = inject(HttpClient);
   baseUrl = environment.apiUrl;
+  members = signal<Member[]>([]);
 
   getMembers() {
-    return this.http.get<Member[]>(this.baseUrl + 'User');
+    return this.http.get<Member[]>(this.baseUrl + 'User').subscribe({
+      next: members => this.members.set(members)
+    })
   }
   getMember(username: string) {
     return this.http.get<Member>(`${this.baseUrl}User/username?username=${username}`);

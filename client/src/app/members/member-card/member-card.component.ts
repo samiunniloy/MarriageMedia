@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation, input } from '@angular/core';
 import { Member } from '../../_models/member';
 import { RouterLink } from '@angular/router';
+import { MembersService } from '../../_services/members.service';
 @Component({
   selector: 'app-member-card',
   standalone:true,
