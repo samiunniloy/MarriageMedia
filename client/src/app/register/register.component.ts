@@ -1,22 +1,25 @@
 import { Component, OnInit, inject, input, output } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { HomeComponent } from '../home/home.component';
 import { AccountService } from '../_services/account.service';
 import { ToastrService } from 'ngx-toastr';
-import { JsonPipe } from '@angular/common';
+import { CommonModule, JsonPipe, NgIf } from '@angular/common';
+import { TextInputComponent } from '../_forms/text-input/text-input.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule,HomeComponent ,JsonPipe],
+  imports: [ReactiveFormsModule,HomeComponent ,CommonModule,JsonPipe,NgIf,TextInputComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
 export class RegisterComponent implements OnInit {
  
   private accountService = inject(AccountService);
-  private toastr=inject(ToastrService)
+  private toastr = inject(ToastrService);
   cancelRegister = output<boolean>();
+  private router = inject(Router);
   model: any = {}
 
   registrationForm: FormGroup = new FormGroup({});
@@ -25,23 +28,47 @@ export class RegisterComponent implements OnInit {
   }
   initializeForm() {
     this.registrationForm = new FormGroup({
-      username: new FormControl('hello',Validators.required),
-      password: new FormControl('',[Validators.required, Validators.minLength(4),
+      username: new FormControl('', Validators.required),
+      gender: new FormControl('', [Validators.required,this.validateGender]),
+      knownAs: new FormControl('', Validators.required),
+      dateOfBirth: new FormControl('', Validators.required),
+      city: new FormControl('', Validators.required),
+      country: new FormControl('', Validators.required),
+      password: new FormControl('', [Validators.required, Validators.minLength(4),
       Validators.maxLength(8)]),
-      confirmPassword:new FormControl('',[Validators.required]),
+      confirmPassword: new FormControl('', [Validators.required, this.matchValues('password')]),
+    });
+    this.registrationForm.controls['password'].valueChanges.subscribe({
+      next:()=>this.registrationForm.controls['confirmPassword'].updateValueAndValidity()
     })
+
+  }
+
+  matchValues(matchTo: string): ValidatorFn {
+
+    return (control: AbstractControl) => {
+      return control.value === control.parent?.get(matchTo)?.value ? null : {ismatching:true}
+    }
+
+  }
+
+  validateGender(): ValidatorFn {
+    return (control: AbstractControl) => {
+      const value = control.value?.toLowerCase();
+      return value === 'male' || value === 'female'
+        ? null
+        : { invalidGender: true }; // Error key if validation fails
+    };
   }
 
   register() {
-    console.log(this.registrationForm.value);
-    //this.accountService.register(this.model).subscribe({
-    //  next: response => {
-    //    console.log(response);
-    //    this.cancel();
-    //  },
-    //  error: error => this.toastr.error(error.error)
-    //})
+  // console.log(this.registrationForm.value);
+    this.accountService.register(this.model).subscribe({
+      next: _=>this.router.navigateByUrl('/members')  ,
+      error: error => this.toastr.error(error.error)
+    })
   }
+
   cancel() {
     this.cancelRegister.emit(false);
   }

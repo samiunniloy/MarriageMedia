@@ -1,36 +1,105 @@
 <form [formGroup]="registrationForm" (ngSubmit)="register()" autocomplete="off">
     <h2 class="text-center text-primary">Sign Up</h2>
     <hr>
-    <div class="mb-3 from-floating">
-        <input type="text"
+
+    <div class="mb-3 form-floating">
+        <input [class.is-invalid]="registrationForm.get('username')?.errors && registrationForm.get('username')?.touched"
+               type="text"
                class="form-control"
                formControlName="username"
                placeholder="Username">
-        <label>UserName</label>
+        <label>Username</label>
+        <div class="invalid-feedback">Please enter a username</div>
     </div>
 
+    <div class="mb-3 form-floating">
+        <select [class.is-invalid]="registrationForm.get('gender')?.errors && registrationForm.get('gender')?.touched"
+                class="form-control"
+                formControlName="gender">
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+        <label>Gender</label>
+        <div *ngIf="registrationForm.get('gender')?.hasError('invalidGender')" class="invalid-feedback">
+            Please select a valid gender
+        </div>
+    </div>
 
-    <div class="mb-3 from-floating">
-        <input type="text"
+    <div class="mb-3 form-floating">
+        <input [class.is-invalid]="registrationForm.get('knownAs')?.errors && registrationForm.get('knownAs')?.touched"
+               type="text"
                class="form-control"
+               formControlName="knownAs"
+               placeholder="Known As">
+        <label>Known As</label>
+        <div class="invalid-feedback">Please enter your Known As</div>
+    </div>
+
+    <div class="mb-3 form-floating">
+        <input [class.is-invalid]="registrationForm.get('dateOfBirth')?.errors && registrationForm.get('dateOfBirth')?.touched"
+               type="date"
+               class="form-control"
+               formControlName="dateOfBirth">
+        <label>Date of Birth</label>
+        <div class="invalid-feedback">Please enter your Date of Birth</div>
+    </div>
+
+    <div class="mb-3 form-floating">
+        <input [class.is-invalid]="registrationForm.get('city')?.errors && registrationForm.get('city')?.touched"
+               type="text"
+               class="form-control"
+               formControlName="city"
+               placeholder="City">
+        <label>City</label>
+        <div class="invalid-feedback">Please enter your City</div>
+    </div>
+
+    <div class="mb-3 form-floating">
+        <input [class.is-invalid]="registrationForm.get('country')?.errors && registrationForm.get('country')?.touched"
+               type="text"
+               class="form-control"
+               formControlName="country"
+               placeholder="Country">
+        <label>Country</label>
+        <div class="invalid-feedback">Please enter your Country</div>
+    </div>
+
+    <div class="mb-3 form-floating">
+        <input [class.is-invalid]="registrationForm.get('password')?.errors && registrationForm.get('password')?.touched"
+               type="password"
                class="form-control"
                formControlName="password"
                placeholder="Password">
         <label>Password</label>
+        <div *ngIf="registrationForm.get('password')?.hasError('required')" class="invalid-feedback">
+            Please enter a Password
+        </div>
+        <div *ngIf="registrationForm.get('password')?.hasError('minlength')" class="invalid-feedback">
+            Password must be between 4 to 8 characters
+        </div>
+        <div *ngIf="registrationForm.get('password')?.hasError('maxlength')" class="invalid-feedback">
+            Password must be between 4 to 8 characters
+        </div>
     </div>
-    <div class="mb-3 from-floating">
-        <input type="text"
-               class="form-control"
+
+    <div class="mb-3 form-floating">
+        <input [class.is-invalid]="registrationForm.get('confirmPassword')?.errors && registrationForm.get('confirmPassword')?.touched"
+               type="password"
                class="form-control"
                formControlName="confirmPassword"
-               placeholder="ConfirmPassword">
+               placeholder="Confirm Password">
         <label>Confirm Password</label>
+        <div *ngIf="registrationForm.get('confirmPassword')?.hasError('ismatching')" class="invalid-feedback">
+            Passwords do not match
+        </div>
     </div>
+
     <div class="form-group text-center">
-        <button class="btn btn-success me-2" type="submit">Register </button>
-        <button class="btn btn-default me-2" (click)="cancel()" type="button">Cancel </button>
+        <button class="btn btn-success me-2" type="submit">Register</button>
+        <button class="btn btn-default me-2" (click)="cancel()" type="button">Cancel</button>
     </div>
 </form>
 
-<P>fORM VALUE:{{registrationForm.value|json}}</P>
-<P>fORM VALUE:{{registrationForm.status|json}}</P>
+<p>Form Value: {{ registrationForm.value | json }}</p>
+<p>Form Status: {{ registrationForm.status | json }}</p>
