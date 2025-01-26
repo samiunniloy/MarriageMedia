@@ -4,27 +4,33 @@ using AutoMapper;
 
 namespace API.Helpers
 {
-    public class AutoMapperProfiles:Profile
+    public class AutoMapperProfiles : Profile
     {
         public AutoMapperProfiles()
         {
+            // Mapping for Photo to PhotoDto
             CreateMap<Photo, PhotoDto>();
-            CreateMap<AppUser, MemberDto>()
-                 .ForMember(d => d.PhotoUrl, o => o.MapFrom(
-                  s => s.Photos.FirstOrDefault(x => x.IsMain)!.Url));
 
+            // Mapping for AppUser to MemberDto
+            CreateMap<AppUser, MemberDto>()
+                .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(
+                    src => src.Photos.FirstOrDefault(x => x.IsMain)!.Url));
+
+            // Two-way mapping for MemberUpdateDto and AppUser
             CreateMap<MemberUpdateDto, AppUser>().ReverseMap();
 
-
-           // CreateMap<RegisterDto, AppUser>()
-           //.ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Username))
-           //.ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.DateOfBirth)))
-           //.ForMember(dest => dest.KnownAs, opt => opt.MapFrom(src => src.KnownAs))
-           //.ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City))
-           //.ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
-           //.ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender));
-
-
+            // Mapping for RegisterDto to AppUser
+            CreateMap<RegisterDto, AppUser>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Username))
+                .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => DateOnly.Parse(src.DateOfBirth)))
+                .ForMember(dest => dest.KnownAs, opt => opt.MapFrom(src => src.KnownAs))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City))
+                .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
+                .ForMember(dest => dest.Created, opt => opt.Ignore()) // Default initialization
+                .ForMember(dest => dest.LastActive, opt => opt.Ignore()) // Default initialization
+                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore()) // Set during password hashing
+                .ForMember(dest => dest.PasswordSalt, opt => opt.Ignore()); // Set during password hashing
         }
     }
 }

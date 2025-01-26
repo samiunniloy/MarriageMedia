@@ -62,11 +62,14 @@ export class RegisterComponent implements OnInit {
   }
 
   register() {
-  // console.log(this.registrationForm.value);
-    this.accountService.register(this.model).subscribe({
-      next: _=>this.router.navigateByUrl('/members')  ,
-      error: error => this.toastr.error(error.error)
-    })
+    if (this.registrationForm.valid) {
+      this.accountService.register(this.registrationForm.value).subscribe({
+        next: _ => this.router.navigateByUrl('/members'),
+        error: error => this.toastr.error(error.error)
+      });
+    } else {
+      this.registrationForm.markAllAsTouched();
+    }
   }
 
   cancel() {
