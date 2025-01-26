@@ -24,7 +24,7 @@
         @if(accountService.currentUser() ){
         <div dropdown class="dropdown">
             <a dropdownToggle class="dropdown-toggle text-light text-decoration-none">
-              Welcome  {{accountService.currentUser()?.username| titlecase}}
+              Welcome  {{accountService.currentUser()?.knownAs}}
             </a>
             <div *dropdownMenu class="dropdown-menu">
                 <a routerLink="/members/edit" class="dropdown-item">Edit Profile</a>

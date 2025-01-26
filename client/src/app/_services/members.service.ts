@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import { Member } from '../_models/member';
 import { MemberUpdateDto } from '../_models/MemberUpdateDto';
 import { PaginatedResult } from '../_models/pagination';
+import { UserParams } from '../_models/userParams';
 
 @Injectable({
   providedIn: 'root'
@@ -16,14 +17,14 @@ export class MembersService {
   paginatedResult = signal<PaginatedResult<Member[]> | null>(null);
 
 
-  getMembers(pageNumber?: number, pageSize?: number) {
-    let params = new HttpParams();
+  getMembers(userParams:UserParams) {
+    
 
-    if (pageNumber && pageSize) {
-      params = params.append('pageNumber', pageNumber);
-      params = params.append('pageSize', pageSize);
-    }
-
+    let params = this.setPaginationHeaders(userParams.pageNumber, userParams.pageSize);
+    params = params.append('minAge', userParams.minAge);
+    params = params.append('maxAge', userParams.maxAge);
+    params = params.append('gender', userParams.gender);
+    params = params.append('orderBy', userParams.orderBy);
 
     return this.http.get<Member[]>(this.baseUrl + 'User', {observe:'response',params}).subscribe({
       next: response => {
@@ -52,5 +53,17 @@ export class MembersService {
   //    })
   //  }
   //}
+
+
+  private setPaginationHeaders(pageNumber: number, pageSize: number) {
+
+    let params = new HttpParams();
+    if (pageNumber && pageSize) {
+      params = params.append('pageNumber', pageNumber);
+      params = params.append('pageSize', pageSize);
+    }
+    return params;
+
+  }
 
 }

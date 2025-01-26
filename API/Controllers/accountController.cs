@@ -33,7 +33,8 @@ namespace API.Controllers
                 Username = user.UserName,
                 Token = tokenService.CreateToken(user),
                 knownAs = user.KnownAs,
-                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
+                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+                Gender = user.Gender
             };
             return Ok();
         }
@@ -51,14 +52,15 @@ namespace API.Controllers
             {
                 if (ComputeHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid Password");
             }
-            
+
             return new UserDto
             {
 
                 Username = user.UserName,
                 Token = tokenService.CreateToken(user),
                 knownAs = user.KnownAs,
-                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
+                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
+                Gender = user.Gender
             };
 
         }
