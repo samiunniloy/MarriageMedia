@@ -2,6 +2,7 @@
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using API.Services;
 using AutoMapper;
@@ -19,9 +20,11 @@ namespace API.Controllers
         IPhotoService photoService) : BaseApiController
     {
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemberDto>>> GetMemberAsyunc()
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetMemberAsyunc([FromQuery]UserParams userParams)
         {
-            var users = await userRepository.GetMemberAsync();
+            var users = await userRepository.GetMemberAsync(userParams);
+
+            Response.AddPaginationHeader(users);
 
             return Ok(users);
         }
