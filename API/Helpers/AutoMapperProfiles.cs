@@ -16,13 +16,13 @@ namespace API.Helpers
             CreateMap<MemberUpdateDto, AppUser>().ReverseMap();
 
 
-            CreateMap<RegisterDto, AppUser>()
-           .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Username))
-           .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.DateOfBirth)))
-           .ForMember(dest => dest.KnownAs, opt => opt.MapFrom(src => src.KnownAs))
-           .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City))
-           .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
-           .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender));
+           // CreateMap<RegisterDto, AppUser>()
+           //.ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Username))
+           //.ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.DateOfBirth)))
+           //.ForMember(dest => dest.KnownAs, opt => opt.MapFrom(src => src.KnownAs))
+           //.ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City))
+           //.ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
+           //.ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender));
 
 
         }
