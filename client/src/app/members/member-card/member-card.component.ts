@@ -1,7 +1,8 @@
-import { Component, ViewEncapsulation, input } from '@angular/core';
+import { Component, ViewEncapsulation, computed, inject, input } from '@angular/core';
 import { Member } from '../../_models/member';
 import { RouterLink } from '@angular/router';
 import { MembersService } from '../../_services/members.service';
+import { LikesService } from '../../_services/likes.service';
 @Component({
   selector: 'app-member-card',
   standalone:true,
@@ -11,5 +12,8 @@ import { MembersService } from '../../_services/members.service';
    
 })
 export class MemberCardComponent {
+
+  private likeService = inject(LikesService);
   member = input.required<Member>();
+  hasLiked = computed(() => this.likeService.likeIds().includes(this.member().id));
 }
