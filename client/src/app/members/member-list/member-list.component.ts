@@ -31,7 +31,7 @@ export class MemberListComponent implements OnInit{
 
 
   loadMembers() {
-    this.memberService.getMembers(this.userParams);
+    this.memberService.getMembers();
   }
 
   resetFilters() {
@@ -40,8 +40,8 @@ export class MemberListComponent implements OnInit{
   }
 
   pageChanged(event: any) {
-    if (this.userParams.pageNumber != event.page) {
-      this.userParams.pageNumber = event.page;
+    if (this.memberService.userParams().pageNumber != event.page) {
+      this.memberService.userParams().pageNumber = event.page;
       this.loadMembers();
     }
   }
