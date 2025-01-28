@@ -15,7 +15,7 @@ using System.Security.Claims;
 namespace API.Controllers
 {
   
-     [Authorize]
+   // [Authorize]
     public class UserController(IUserRepository userRepository, IMapper mapper,
         IPhotoService photoService) : BaseApiController
     {
@@ -109,5 +109,7 @@ namespace API.Controllers
 
             return BadRequest("Problem adding photo");
         }
+       
+
     }
 }

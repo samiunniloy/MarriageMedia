@@ -12,17 +12,14 @@ namespace API.services
         public string CreateToken(AppUser user)
         {
             var tokenkey = config["TokenKey"] ?? throw new Exception("Cannot access tokenKey from appsetting");
-            if (tokenkey.Length < 64) throw new Exception("Your tokenKey needs tp be longer");
-            var key=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenkey));
+            if (tokenkey.Length < 64) throw new Exception("Your tokenKey needs to be longer");
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenkey));
 
-
-            //claims are the information we want to store in the token
-            //we are storing the username in the token
-            //clamins holo ki ki access dite parbe token theke
             var claims = new List<Claim>
-            {
-                new (ClaimTypes.NameIdentifier, user.UserName)
-            };
+        {
+            new Claim(ClaimTypes.Name, user.UserName),            // For username
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) // For user ID
+        };
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -33,8 +30,8 @@ namespace API.services
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
-          //  Console.WriteLine(token);
             return tokenHandler.WriteToken(token);
         }
     }
+
 }

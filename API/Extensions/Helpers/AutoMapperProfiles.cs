@@ -31,6 +31,14 @@ namespace API.Helpers
                 .ForMember(dest => dest.LastActive, opt => opt.Ignore()) // Default initialization
                 .ForMember(dest => dest.PasswordHash, opt => opt.Ignore()) // Set during password hashing
                 .ForMember(dest => dest.PasswordSalt, opt => opt.Ignore()); // Set during password hashing
+
+
+            CreateMap<Message, MessageDto>()
+                .ForMember(dest => dest.SenderPhotoUrl, opt => opt.MapFrom(
+                    src => src.Sender.Photos.FirstOrDefault(x => x.IsMain)!.Url))
+                .ForMember(dest => dest.RecipientPhotoUrl, opt => opt.MapFrom(
+                    src => src.Recipient.Photos.FirstOrDefault(x => x.IsMain)!.Url));
+
         }
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class LikesController(ILikesRepository likesRepository):BaseApiController
+    public class LikesController(ILikesRepository likesRepository,IUserRepository userRepository):BaseApiController
     {
 
         [HttpPost("{targetUserId:int}")]
@@ -44,9 +44,11 @@ namespace API.Controllers
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult<IEnumerable<int>>> GetUserLikeIds()
+        public async Task<ActionResult<IEnumerable<int>>> GetUserLikeIds(string username)
         {
-            return Ok(await likesRepository.GetCurrentUserLikeIds(User.GetUserId()));
+            var user = await userRepository.GetMemberAsync(username);
+
+            return Ok(await likesRepository.GetCurrentUserLikeIds(user.Id));
 
         }
         [HttpGet]

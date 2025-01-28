@@ -45,7 +45,7 @@ export class AccountService {
 
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUser.set(user);
-    this.likeService.getLikeIds();
+   // this.likeService.getLikeIds();
 
   }
 

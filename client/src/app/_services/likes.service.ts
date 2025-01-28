@@ -19,10 +19,24 @@ export class LikesService {
     return this.http.get<number[]>(`${this.baseUrl}likes?predicate=${predicate}`);
   }
 
+  //getLikeIds() {
+  //  return this.http.get<number[]>(`${this.baseUrl}likes?/list`).subscribe({
+  //    next:ids=>this.likeIds.set(ids)
+  //  })
+  //}
   getLikeIds() {
-    return this.http.get<number[]>(`${this.baseUrl}likes/list`).subscribe({
-      next:ids=>this.likeIds.set(ids)
-    })
+    const user = localStorage.getItem('user');
+    if (!user) {
+      console.error('No user found in local storage');
+      return;
+    }
+
+    return this.http
+      .get<number[]>(`${this.baseUrl}api/Likes/list?user=${encodeURIComponent(user)}`)
+      .subscribe({
+        next: (ids) => this.likeIds.set(ids),
+        error: (err) => console.error('Error fetching like IDs:', err),
+      });
   }
 
   constructor() { }

@@ -8,7 +8,7 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace API.Data
 {
-    public class Likerepository(DataContext context,IMapper mapper) : ILikesRepository
+    public class LikesRepository(DataContext context,IMapper mapper) : ILikesRepository
     {
       public  void AddLike(UserLike like)
         {

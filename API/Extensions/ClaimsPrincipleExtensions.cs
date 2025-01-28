@@ -6,14 +6,22 @@ namespace API.Extensions
     {
         public static string GetUsername(this ClaimsPrincipal user)
         {
-           var username= user.FindFirstValue(ClaimTypes.Name)
-                ??throw new System.Exception("No username found");
-            return username;
+            return user.FindFirstValue(ClaimTypes.Name)
+                ?? throw new Exception("No username found");
         }
 
         public static int GetUserId(this ClaimsPrincipal user)
         {
-            return int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var idClaim = user.FindFirstValue(ClaimTypes.NameIdentifier)
+                ?? throw new Exception("No user ID found");
+
+            if (!int.TryParse(idClaim, out int userId))
+            {
+                throw new Exception("Invalid user ID format");
+            }
+
+            return userId;
         }
     }
 }
+   
