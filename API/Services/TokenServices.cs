@@ -11,9 +11,9 @@ namespace API.services
     {
         public string CreateToken(AppUser user)
         {
-            var tokenkey = config["TokenKey"] ?? throw new Exception("Cannot access tokenKey from appsetting");
-            if (tokenkey.Length < 64) throw new Exception("Your tokenKey needs to be longer");
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenkey));
+            var TokenKey = config["TokenKey"] ?? throw new Exception("Cannot access tokenKey from appsetting");
+            if (TokenKey.Length < 64) throw new Exception("Your tokenKey needs to be longer");
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(TokenKey));
 
             var claims = new List<Claim>
         {
@@ -24,7 +24,7 @@ namespace API.services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(7),
+                Expires = DateTime.Now.AddDays(100),
                 SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature)
             };
 

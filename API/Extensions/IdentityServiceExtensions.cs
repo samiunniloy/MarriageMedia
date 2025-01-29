@@ -14,7 +14,7 @@ namespace API.Extensions
                         options.TokenValidationParameters = new TokenValidationParameters
                         {
                             ValidateIssuerSigningKey = true,
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey)),
+                            IssuerSigningKey =  new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey)),
                             ValidateIssuer = false,
                             ValidateAudience = false
                         };

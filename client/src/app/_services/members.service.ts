@@ -21,7 +21,7 @@ export class MembersService {
 
   memberCache = new Map();
   user = this.accountService.currentUser();
-  userParams = model<UserParams>(new UserParams(this.user));
+  userParams = signal<UserParams>(new UserParams(this.user));
 
   resetUserParams() {
     this.userParams.set(new UserParams(this.user));

@@ -4,8 +4,16 @@ namespace API.Extensions
 {
     public static class ClaimsPrincipleExtensions
     {
+        //public static string GetUsername(this ClaimsPrincipal user)
+        //{
+        //    return user.FindFirstValue(ClaimTypes.Name)
+        //        ?? throw new Exception("No username found");
+        //}
+
         public static string GetUsername(this ClaimsPrincipal user)
         {
+            var claims = user.Claims.ToList();
+            // Log or inspect claims here
             return user.FindFirstValue(ClaimTypes.Name)
                 ?? throw new Exception("No username found");
         }

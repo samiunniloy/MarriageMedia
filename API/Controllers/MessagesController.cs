@@ -1,12 +1,16 @@
 ﻿using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Extensions.Helpers;
 using API.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+
+    [Authorize]
     public class MessagesController(IMessageRepository messageRepository,
         IUserRepository userRepository,IMapper mapper):BaseApiController
     {
@@ -33,6 +37,24 @@ namespace API.Controllers
             messageRepository.AddMessage(message);
             if (await messageRepository.SaveAllAsync()) return Ok(mapper.Map<MessageDto>(message));
             return BadRequest("Failed to send message");
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<MessageDto>>>
+            GetMessagesForUser([FromQuery] MessageParams messageParams)
+        {
+            messageParams.Username = User.GetUsername();
+            var messages = await messageRepository.GetMessagesForUser(messageParams);
+            Response.AddPaginationHeader(messages);
+            return messages;
+        }
+
+        [HttpGet("thread/{username}")]
+        public async Task<ActionResult<IEnumerable<MessageDto>>>
+            GetMessageThread(string username)
+        {
+            var currentUsername = User.GetUsername();
+            return Ok(await messageRepository.GetMessageThread(currentUsername, username));
         }
 
     }
