@@ -11,7 +11,7 @@ namespace API.Controllers
 {
 
    // [Authorize]
-    public class MessagesController(IMessageRepository messageRepository,
+    public class messagesController(IMessageRepository messageRepository,
         IUserRepository userRepository,IMapper mapper):BaseApiController
     {
         [HttpPost]

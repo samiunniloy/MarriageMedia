@@ -11,6 +11,7 @@ import { ServerErrorComponent } from './errors/server-error/server-error.compone
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { preventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
 import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
+import { memberDetailedResolver } from './_resolvers/member-detailed.resolver'; // Ensure correct path
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -20,12 +21,16 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'members', component: MemberListComponent },
-      { path: 'members/edit', component: MemberEditComponent },
       {
-        path: 'members/:username', component: MemberDetailComponent,
+        path: 'members/edit', component: MemberEditComponent,
         canDeactivate: [preventUnsavedChangesGuard]
       },
       { path: 'members/photos', component: PhotoEditorComponent },
+      {
+        path: 'members/:username', component: MemberDetailComponent,
+        resolve: { member: memberDetailedResolver }
+      },
+      
       { path: 'lists', component: ListsComponent },
       { path: 'messages', component: MessagesComponent },
 

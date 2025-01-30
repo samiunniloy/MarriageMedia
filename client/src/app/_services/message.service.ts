@@ -18,7 +18,7 @@ export class MessageService {
   getMessages(pageNumber: number, pageSize: number, container: string) {
     let params =setPaginationHeaders(pageNumber, pageSize);
     params = params.append('Container', container);
-    return this.http.get<Message[]>(this.baseUrl + 'messages', { observe: 'response', params })
+    return this.http.get<Message[]>(this.baseUrl + 'Messages', { observe: 'response', params })
       .subscribe({
         next: response => {
           this.paginatedResult.set({
@@ -31,9 +31,13 @@ export class MessageService {
   getMessageThread(username: string) {
     const url = `${this.baseUrl}messages/thread/${username}`;
     console.log('Generated URL:', url);
-    return this.http.get<Message[]>(url);
-
+    return this.http.get<Message[]>(url)
   }
+
+  sendMessage(username: string, content: string) {
+    return this.http.post<Message>(this.baseUrl + 'mesSages', {recipientUsername:username,content})
+  }
+
 }
 
 
