@@ -8,8 +8,8 @@
         public required string Content { get; set; } = null!;
         public DateTime? DateRead { get; set; }
         public DateTime MessageSent { get; set; }=DateTime.UtcNow;
-        private bool SenderDeleted { get; set; }
-        private bool RecipientDeleted { get; set; }
+        public bool SenderDeleted { get; set; }
+        public bool RecipientDeleted { get; set; }
 
         public int SenderId { get; set; }
         public AppUser Sender { get;set; } = null!;

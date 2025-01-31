@@ -23,7 +23,7 @@
 
 
 
-@if(!messageService.paginatedResult()?.items){
+@if(!messageService.paginatedResult()?.items|| messageService.paginatedResult()?.items?.length==0  ){
 <h3>No messages</h3>
 }
 @else{
@@ -43,14 +43,17 @@
             <td>
                 
                 <div>
-                    <img [attr.src]="container === 'Outbox' ? (message.recipientPhotoUrl || './assets/user.png') : (message.senderPhotoUrl || './assets/user.png')"
-                         alt="image of user" class="rounded-circle" >
-                    <strong>{{ container === 'Outbox' ? message.recipientUserName : message.senderUserName }}</strong>
+                    <img [src]="isOutbox ?
+                     (message.recipientPhotoUrl || './assets/user.png') :
+                     (message.senderPhotoUrl || './assets/user.png')"
+                         alt="image of user" class="rounded-circle me-2" >
+                    <strong>{{ container === 'Outbox' ?
+                        message.recipientUserName : message.senderUserName }}</strong>
                 </div>
 
             </td>
-            <td>
-                <button class="btn btn-danger">Delete</button>
+            <td (click)="$event.stopPropagation()" >
+                <button (click)="deleteMessage(message.id)" class="btn btn-danger">Delete</button>
             </td>
         </tr>
         }
@@ -59,7 +62,8 @@
 }
 
 
-@if(messageService.paginatedResult()?.pagination){
+@if(messageService.paginatedResult()?.pagination &&
+messageService.paginatedResult()?.pagination?.totalItems!>0 ){
 <div class="d-flex justify-content-center">
     <pagination [boundaryLinks]="true"
                 [totalItems]="messageService.paginatedResult()?.pagination!.totalItems"
