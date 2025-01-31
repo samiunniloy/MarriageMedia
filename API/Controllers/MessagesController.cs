@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
 
-   // [Authorize]
+    [Authorize]
     public class messagesController(IMessageRepository messageRepository,
         IUserRepository userRepository,IMapper mapper):BaseApiController
     {
