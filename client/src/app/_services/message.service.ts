@@ -39,8 +39,9 @@ export class MessageService {
   }
 
   deleteMessage(id: number) {
-    return this.http.delete(this.baseUrl + 'messages/' + id);
+    return this.http.delete(`http://localhost:5126/api/messages/${id}`);
   }
+
 
 }
 

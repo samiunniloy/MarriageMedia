@@ -21,12 +21,16 @@ namespace API.Data
            context.Messages.Remove(message);
         }
 
-      public async  Task<Message?>GetMessage(int id)
+        public async Task<Message?> GetMessage(int id)
         {
-            throw new NotImplementedException();
+            return await context.Messages
+                .Include(m => m.Sender)
+                .Include(m => m.Recipient)
+                .FirstOrDefaultAsync(m => m.Id == id);
         }
 
-       public async Task<PagedList<MessageDto>> GetMessagesForUser(MessageParams messageParams)
+
+        public async Task<PagedList<MessageDto>> GetMessagesForUser(MessageParams messageParams)
         {
             
             var quey=context.Messages

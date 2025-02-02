@@ -1,14 +1,12 @@
 ﻿using System.Reflection.Metadata.Ecma335;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
 namespace API.Entities
 {
-    public class AppUser
+    public class AppUser:IdentityUser<int>
     {
-        public int Id { get; set; }
-        public required string UserName { get; set; }
-        public byte[] PasswordHash { get; set; } = Array.Empty<byte>();
-        public byte[] PasswordSalt { get; set; } = Array.Empty<byte>();
+     
         public DateOnly DateOfBirth { get; set; }
         public required string KnownAs { get; set; }
         public DateTime Created { get; set; } = DateTime.UtcNow;
@@ -28,6 +26,8 @@ namespace API.Entities
         public List<Message> MessagesSent { get; set; } = [];
 
         public List<Message> MessagesReceived { get; set; } = [];
+
+        public ICollection<AppUserRole> UserRoles { get; set; } = [];
 
         public int GetAge()
         {

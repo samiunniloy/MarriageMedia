@@ -28,9 +28,8 @@ namespace API.Helpers
                 .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
                 .ForMember(dest => dest.Created, opt => opt.Ignore()) // Default initialization
-                .ForMember(dest => dest.LastActive, opt => opt.Ignore()) // Default initialization
-                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore()) // Set during password hashing
-                .ForMember(dest => dest.PasswordSalt, opt => opt.Ignore()); // Set during password hashing
+                .ForMember(dest => dest.LastActive, opt => opt.Ignore()); // Default initialization
+                
 
 
             CreateMap<Message, MessageDto>()
