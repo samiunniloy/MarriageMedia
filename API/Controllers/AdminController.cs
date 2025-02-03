@@ -10,7 +10,7 @@ namespace API.Controllers
     public class AdminController(UserManager<AppUser> userManager):BaseApiController
     {
 
-        [Authorize(Policy = "RequiredAdminRole")]
+        //[Authorize(Policy = "RequiredAdminRole")]
         [HttpGet("users-with-roles")]
         public async Task<ActionResult<string>> GetUserWithRoles()
         {
@@ -25,7 +25,7 @@ namespace API.Controllers
                 .ToListAsync();
             return Ok(users);
         }
-        [Authorize(Policy = "requiredAdminRole")]
+      //[Authorize(Policy = "requiredAdminRole")]
         [HttpPost("edit-roles/{username}")]
         public async Task<ActionResult<string>> EditRoles(string username, [FromQuery] string roles)
         {
@@ -43,7 +43,7 @@ namespace API.Controllers
             return Ok(await userManager.GetRolesAsync(user));
         }
 
-        [Authorize(Policy = "ModeratePhotoRole")]
+        //[Authorize(Policy = "ModeratePhotoRole")]
         [HttpGet("photos-tomoderate")]
         public ActionResult<string> GetPhotosForModeration()
         {

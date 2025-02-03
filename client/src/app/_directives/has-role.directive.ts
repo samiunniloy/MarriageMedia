@@ -2,6 +2,7 @@ import { Directive, Input, OnInit, TemplateRef, ViewContainerRef, inject } from 
 import { AccountService } from '../_services/account.service';
 
 @Directive({
+  standalone:true,
   selector: '[appHasRole]'
 })
 export class HasRoleDirective implements OnInit {
@@ -14,8 +15,13 @@ export class HasRoleDirective implements OnInit {
 
   ngOnInit(): void {
 
-  }
+    if (this.accountService.roles()?.some((r: string) => this.appHasRole.includes(r))) {
+      this.viewContainerref.createEmbeddedView(this.templateRef);
+    }
+    else {
+      this.viewContainerref.clear();
+    }
 
- 
+  }
 
 }
