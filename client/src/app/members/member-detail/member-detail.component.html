@@ -6,6 +6,14 @@
                  alt="{{member.knownAs}}"
                  class="card-img img-thumbnail">
             <div class="card-body">
+
+                @if(presenceService.onlineUsers().includes(member.username)){
+                <div class="mb-2">
+                    <i class="fa fa-user-circle text-success"></i>
+                </div>
+                }
+
+
                 <div>
                     <strong>Location:</strong>
                     <p>{{member.city}}, {{member.country}}</p>

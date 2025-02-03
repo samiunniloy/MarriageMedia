@@ -7,6 +7,7 @@ import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
 import { MemberMessagesComponent } from '../member-messages/member-messages.component';
 import { Message } from '../../_models/message';
 import { MessageService } from '../../_services/message.service';
+import { PresenceService } from '../../_services/presence.service';
 
 @Component({
   selector: 'app-member-detail',
@@ -21,6 +22,7 @@ export class MemberDetailComponent implements OnInit {
 
   private memberService = inject(MembersService);
   private messageService = inject(MessageService);
+  presenceService = inject(PresenceService);
   private route = inject(ActivatedRoute);
 
   member: Member = {} as Member;
