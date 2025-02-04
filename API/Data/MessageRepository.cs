@@ -85,26 +85,6 @@ namespace API.Data
             return await context.SaveChangesAsync()>0;
         }
 
-      // public  void Addgroup(Group group)
-      //  {
-      //      context.Groups.Add(group);
-      //  }
-
-      //  public async Task<Connection?> GetConnection(string connectionId)
-      //  {
-      //      return await context.Connections.FindAsync(connectionId);
-      //  }
-
-      // public async Task<Group?>getMessagegroup(string groupName)
-      //  {
-      //      return await context.Groups
-      //          .Include(x => x.Connections)
-      //          .FirstOrDefaultAsync(x => x.Name == groupName);
-      //  }
-
-      //public   void RemoveConnection(Connection connection)
-      //  {
-      //      context.Connections.Remove(connection);
-      //  }
+   
     }
 }

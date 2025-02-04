@@ -5,12 +5,12 @@ import { FormsModule, NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-member-messages',
-  standalone:true,
+  standalone: true,
   imports: [FormsModule],
   templateUrl: './member-messages.component.html',
   styleUrl: './member-messages.component.css'
 })
-export class MemberMessagesComponent  {
+export class MemberMessagesComponent {
 
   @ViewChild('messageForm') messageForm?: NgForm;
 
@@ -20,10 +20,10 @@ export class MemberMessagesComponent  {
   messageContent = '';
   sendMessage() {
     this.messageService.sendMessage(this.username(), this.messageContent)
-      .then(() =>{
+      .then(() => {
         this.messageForm?.reset();
       })
   }
 
 
-}
+}  
