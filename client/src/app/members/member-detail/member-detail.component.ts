@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { MembersService } from '../../_services/members.service';
 import { ActivatedRoute } from '@angular/router';
 import { Member } from '../../_models/member';
@@ -8,6 +8,7 @@ import { MemberMessagesComponent } from '../member-messages/member-messages.comp
 import { Message } from '../../_models/message';
 import { MessageService } from '../../_services/message.service';
 import { PresenceService } from '../../_services/presence.service';
+import { AccountService } from '../../_services/account.service';
 
 @Component({
   selector: 'app-member-detail',
@@ -16,12 +17,13 @@ import { PresenceService } from '../../_services/presence.service';
   templateUrl: './member-detail.component.html',
   styleUrl: './member-detail.component.css'
 })
-export class MemberDetailComponent implements OnInit {
+export class MemberDetailComponent implements OnInit ,OnDestroy{
 
   @ViewChild('memberTabs', {static:true}) memberTabs?: TabsetComponent;
 
   private memberService = inject(MembersService);
   private messageService = inject(MessageService);
+  private accountService = inject(AccountService);
   presenceService = inject(PresenceService);
   private route = inject(ActivatedRoute);
 
@@ -50,9 +52,6 @@ export class MemberDetailComponent implements OnInit {
 
   }
 
-  onUpdatedMessages(event: Message) {
-    this.messages.push(event);
-  }
 
 
   selectTab(heading: string) {
@@ -64,10 +63,14 @@ export class MemberDetailComponent implements OnInit {
 
   onTabActivated(data: TabDirective) {
     this.activeTab = data;
-    if (this.activeTab.heading === 'Messages' && this.messages.length === 0 && this.member) {
-      this.messageService.getMessageThread(this.member.username).subscribe({
-        next: messages => this.messages = messages
-      })
+    if (this.activeTab.heading === 'Messages' && this.member) {
+      const user = this.accountService.currentUser();
+      if (!user) return;
+      this.messageService.createHubConnection(user, this.member.username);
+
+    }
+    else {
+      this.messageService.stopHubConnection();
     }
   }
 
@@ -90,4 +93,9 @@ export class MemberDetailComponent implements OnInit {
       }
     });
   }
+
+  ngOnDestroy(): void {
+    this.messageService.stopHubConnection();
+  }
+
 }
