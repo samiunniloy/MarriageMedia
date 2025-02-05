@@ -29,14 +29,20 @@ namespace API.Helpers
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
                 .ForMember(dest => dest.Created, opt => opt.Ignore()) // Default initialization
                 .ForMember(dest => dest.LastActive, opt => opt.Ignore()); // Default initialization
-                
 
 
-            CreateMap<Message, MessageDto>()
-                .ForMember(dest => dest.SenderPhotoUrl, opt => opt.MapFrom(
-                    src => src.Sender.Photos.FirstOrDefault(x => x.IsMain)!.Url))
-                .ForMember(dest => dest.RecipientPhotoUrl, opt => opt.MapFrom(
-                    src => src.Recipient.Photos.FirstOrDefault(x => x.IsMain)!.Url));
+
+            //CreateMap<Message, MessageDto>()
+            //    .ForMember(dest => dest.SenderPhotoUrl, opt => opt.MapFrom(
+            //        src => src.Sender.Photos.FirstOrDefault(x => x.IsMain)!.Url))
+            //    .ForMember(dest => dest.RecipientPhotoUrl, opt => opt.MapFrom(
+            //        src => src.Recipient.Photos.FirstOrDefault(x => x.IsMain)!.Url));
+
+           CreateMap<Message, MessageDto>()
+            .ForMember(dest => dest.SenderPhotoUrl, opt => opt.MapFrom(
+                src => src.Sender.Photos.FirstOrDefault(p => p.IsMain)!.Url))  // Assuming you have a Photos relationship
+            .ForMember(dest => dest.RecipientPhotoUrl, opt => opt.MapFrom(
+                src => src.Recipient.Photos.FirstOrDefault(p => p.IsMain)!.Url)); // Same for Recipient
 
         }
     }

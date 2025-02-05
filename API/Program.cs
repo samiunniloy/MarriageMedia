@@ -1,4 +1,5 @@
 using API.Data;
+using API.Data.Repositories;
 using API.Entities;
 using API.Extensions;
 using API.Interfaces;
@@ -10,9 +11,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -42,11 +45,32 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 // Add services to the container.
+builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDB"));
+
+//builder.Services.AddSingleton<IMongoClient>(sp =>
+//{
+//    var settings = sp.GetRequiredService<IConfiguration>().GetSection("MongoDB").Get<MongoDbSettings>();
+//    if (string.IsNullOrEmpty(settings.ConnectionString))
+//    {
+//        throw new ArgumentNullException(nameof(settings.ConnectionString), "MongoDB ConnectionString is missing.");
+//    }
+//    return new MongoClient(settings.ConnectionString);
+//});
+
+//builder.Services.AddScoped(sp =>
+//{
+//    var settings = sp.GetRequiredService<IConfiguration>().GetSection("MongoDB").Get<MongoDbSettings>();
+//    var client = sp.GetRequiredService<IMongoClient>();
+//    return client.GetDatabase(settings.DatabaseName);
+//});
+
+
+
 
 
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityService(builder.Configuration);
-
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
 //builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

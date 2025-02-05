@@ -57,7 +57,7 @@ namespace API.Data
 
         
 
-        async Task<AppUser?> IUserRepository.GetUserByIdAsync(int id)
+        public async Task<AppUser?> GetUserByIdAsync(int id)
         {
             return await context.Users.FindAsync(id);
         }

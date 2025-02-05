@@ -28,7 +28,10 @@ export class MessageService {
       .withAutomaticReconnect()
       .build();
 
-    this.hubConnection.start().catch(error => console.log(error));
+    this.hubConnection.start().catch(error => {
+      console.log(error);
+      console.log('could not connect to hub');
+    });
     this.hubConnection.on('ReceiveMessageThread', messages => {
       this.messageThread.set(messages);
     });
@@ -69,6 +72,7 @@ export class MessageService {
 
  async sendMessage(username: string, content: string) {
     return  this.hubConnection?.invoke('SendMessage', { recipientUsername: username, content });
+  
   }
 
   deleteMessage(id: number) {

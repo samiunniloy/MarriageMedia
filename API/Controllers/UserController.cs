@@ -23,7 +23,7 @@ namespace API.Controllers
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetMemberAsyunc([FromQuery]UserParams userParams)
         {
 
-          //  userParams.CurrentUsername = "lisa";
+           userParams.CurrentUsername = User.GetUsername();
          //   userParams.CurrentUsername=User.GetUsername();
 
             var users = await userRepository.GetMemberAsync(userParams);
