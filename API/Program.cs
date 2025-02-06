@@ -65,8 +65,13 @@ builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("Mo
 //});
 
 
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "MarriageMedia";
+});
 
-
+builder.Services.AddScoped<IUserRepository, CachedUserRepository>();
 
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityService(builder.Configuration);

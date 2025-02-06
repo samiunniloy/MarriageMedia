@@ -7,6 +7,7 @@ using API.Services;
 using API.SignalR;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
+using StackExchange.Redis;
 
 namespace API.Extensions
 {
@@ -25,6 +26,18 @@ namespace API.Extensions
 
 
 
+            //services.AddStackExchangeRedisCache(options =>
+            //{
+            //    options.Configuration = "localhost:6379"; // Redis server configuration
+            //    options.InstanceName = "MarriageMedia"; // Optional: Prefix for cache keys
+            //});
+
+            //// Optional: Direct Redis connection if you need to interact with Redis directly
+            //services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost:6379"));
+
+
+
+
             services.AddSingleton<IMongoClient>(sp =>
                 new MongoClient(config.GetValue<string>("MongoDB:ConnectionString")));
 
@@ -33,7 +46,7 @@ namespace API.Extensions
 
 
             services.AddCors();
-            services.AddScoped<IUserRepository, UserRepository>();
+           // services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ILikesRepository, LikesRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IPhotoService, PhotoService>();

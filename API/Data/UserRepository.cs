@@ -77,9 +77,12 @@ namespace API.Data
            return await  context.SaveChangesAsync() > 0;
         }
 
-        void IUserRepository.update(AppUser user)
+        public async Task update(AppUser user)
         {
-           context.Entry(user).State = EntityState.Modified;
+            context.Users.Update(user);
+            await context.SaveChangesAsync();
         }
+
+        
     }
 }

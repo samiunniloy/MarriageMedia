@@ -16,7 +16,7 @@ namespace API.Controllers
 {
   
    [Authorize]
-    public class UserController(IUserRepository userRepository, IMapper mapper,
+    public class UserController(IUserRepository cachedRepository, IMapper mapper,
         IPhotoService photoService) : BaseApiController
     {
         [HttpGet]
@@ -26,7 +26,7 @@ namespace API.Controllers
            userParams.CurrentUsername = User.GetUsername();
          //   userParams.CurrentUsername=User.GetUsername();
 
-            var users = await userRepository.GetMemberAsync(userParams);
+            var users = await cachedRepository.GetMemberAsync(userParams);
 
             Response.AddPaginationHeader(users);
 
@@ -36,7 +36,7 @@ namespace API.Controllers
         [HttpGet("{username}")]
         public async Task<ActionResult<MemberDto>> GetMemberAsync(string username)
         {
-            var user = await userRepository.GetMemberAsync(username);
+            var user = await cachedRepository.GetMemberAsync(username);
             if (user == null)
             {
                 return NotFound("name doesnt exist");
@@ -47,17 +47,18 @@ namespace API.Controllers
 
         public async Task<ActionResult> UpdateUser(MemberUpdateDto memberUpdateDto)
         {
-            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var username = User.GetUsername();
 
             if (username == null) return BadRequest("No Username Found in Token");
 
-            var user = await userRepository.GetUserByUsernameAsync(username);
+            var user = await cachedRepository.GetUserByUsernameAsync(username);
             if (user == null) return BadRequest("CouldNot Find user");
             mapper.Map(memberUpdateDto, user);
-           // Console.WriteLine(user);
-            userRepository.update(user);
-            if (await userRepository.SaveAllAsync()) return NoContent();
-            return BadRequest("Failed to update user");
+            // Console.WriteLine(user);
+            cachedRepository.update(user);
+            return Ok();
+            //if (await userRepository.SaveAllAsync()) return NoContent();
+            //return BadRequest("Failed to update user");
         }
 
         [HttpPost("add-photo")]
@@ -73,7 +74,7 @@ namespace API.Controllers
             if (username == null)
                 return Unauthorized("No Username Found in Token");
 
-            var user = await userRepository.GetUserByUsernameAsync(username);
+            var user = await cachedRepository.GetUserByUsernameAsync(username);
             if (user == null)
                 return NotFound("Could not find user");
 
@@ -90,7 +91,7 @@ namespace API.Controllers
 
             user.Photos.Add(photo);
 
-            if (await userRepository.SaveAllAsync())
+            if (await cachedRepository.SaveAllAsync())
             {
                 var photoDto = mapper.Map<PhotoDto>(photo);
 
