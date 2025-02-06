@@ -13,6 +13,6 @@ import { CommonModule, JsonPipe, NgFor } from '@angular/common';
 })
 export class PhotoEditorComponent {
 
-//  member = input.required<Member>();
+ //member = input.required<Member>();
 
 }

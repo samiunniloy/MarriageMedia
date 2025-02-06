@@ -8,11 +8,12 @@ import { ToastrService } from 'ngx-toastr';
 import { MemberUpdateDto } from '../../_models/MemberUpdateDto';
 import { PhotoEditorComponent } from '../photo-editor/photo-editor.component';
 import { CommonModule } from '@angular/common';
+import { PhotoComponent } from '../photo/photo.component';
 
 @Component({
   selector: 'app-member-edit',
   standalone: true,
-  imports: [TabsModule, FormsModule,PhotoEditorComponent,CommonModule],
+  imports: [TabsModule, FormsModule,PhotoEditorComponent,CommonModule,PhotoComponent],
   template: `
     @if(member){
     <div class="row">
@@ -91,8 +92,8 @@ import { CommonModule } from '@angular/common';
               </div>
             </form>
           </tab>
-          <tab heading="Edit Photos">
-           
+          <tab heading="Photos">
+                   <app-photo></app-photo>
           </tab>
         </tabset>
       </div>
