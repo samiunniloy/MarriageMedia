@@ -1,1 +1,28 @@
+<div>
+    <h2>Image Upload and Display</h2>
 
+    <button (click)="setMode('upload')" [disabled]="isUploadMode">Upload Image</button>
+    <button (click)="setMode('show')" [disabled]="!isUploadMode">Show Images</button>
+
+    <div *ngIf="isUploadMode">
+        <h3>Upload Image</h3>
+        <input type="file" (change)="onFileChange($event)" accept="image/*" />
+        <button (click)="uploadImage()" [disabled]="!selectedImage">Upload Image</button>
+
+        <div *ngIf="selectedImage">
+            <h4>Preview:</h4>
+            <img [src]="selectedImage" alt="Image Preview" width="300" />
+        </div>
+    </div>
+
+    <div *ngIf="!isUploadMode">
+        <h3>Show Images</h3>
+        <div *ngIf="images.length === 0">
+            <p>No images found.</p>
+        </div>
+        <div *ngFor="let image of images">
+            <h4>{{ image.imageName }}</h4>
+            <img [src]="'data:image/png;base64,' + image.base64Image" alt="Image" width="300" />
+        </div>
+    </div>
+</div>

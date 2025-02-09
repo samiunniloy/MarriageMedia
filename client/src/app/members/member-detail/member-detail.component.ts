@@ -9,11 +9,12 @@ import { Message } from '../../_models/message';
 import { MessageService } from '../../_services/message.service';
 import { PresenceService } from '../../_services/presence.service';
 import { AccountService } from '../../_services/account.service';
+import { PhotoComponent } from '../photo/photo.component';
 
 @Component({
   selector: 'app-member-detail',
   standalone: true,
-  imports: [TabsModule, GalleryModule, MemberMessagesComponent],
+  imports: [TabsModule, GalleryModule, MemberMessagesComponent,PhotoComponent],
   templateUrl: './member-detail.component.html',
   styleUrl: './member-detail.component.css'
 })

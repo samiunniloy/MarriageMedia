@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{180C998C-4E45-4BA0-8617-2D960D47D814}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Photo", "Photo\Photo.csproj", "{CBC06379-EDBC-4564-BA79-A614C8BE4AF4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service2.Worker", "Service2.Worker\Service2.Worker.csproj", "{2CF0BD12-16BB-4F55-B462-E65948D2EA4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{180C998C-4E45-4BA0-8617-2D960D47D814}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{180C998C-4E45-4BA0-8617-2D960D47D814}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{180C998C-4E45-4BA0-8617-2D960D47D814}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CBC06379-EDBC-4564-BA79-A614C8BE4AF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CBC06379-EDBC-4564-BA79-A614C8BE4AF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CBC06379-EDBC-4564-BA79-A614C8BE4AF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CBC06379-EDBC-4564-BA79-A614C8BE4AF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CF0BD12-16BB-4F55-B462-E65948D2EA4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CF0BD12-16BB-4F55-B462-E65948D2EA4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CF0BD12-16BB-4F55-B462-E65948D2EA4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CF0BD12-16BB-4F55-B462-E65948D2EA4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

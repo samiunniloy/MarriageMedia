@@ -4,15 +4,14 @@ using API.Entities;
 using API.Extensions;
 using API.Interfaces;
 using API.Middleware;
-using API.services;
+using API.Rabbit;
 using API.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MongoDB.Driver;
-using System.Text;
+using RabbitMQ.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -81,7 +80,10 @@ builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<RabbitMQ.Client.IConnectionFactory>(sp =>
+    new ConnectionFactory { HostName = "localhost" });
 
+builder.Services.AddSingleton<IRabbitMQService, RabbitMQService>();
 
 
 var app = builder.Build();
