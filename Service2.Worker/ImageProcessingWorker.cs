@@ -1,14 +1,10 @@
-﻿
+﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using RabbitMQ.Client;
-
-using System.Text.Json;
 using System.Text;
+using System.Text.Json;
 
 namespace Service2.Worker
 {
-   
-
     public class ImageProcessingWorker : BackgroundService
     {
         private readonly IConnection _connection;
@@ -21,74 +17,70 @@ namespace Service2.Worker
             _channel = _connection.CreateModel();
             _mongoDBService = mongoDBService;
 
-            _channel.QueueDeclare(
-                queue: "request_queue",
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
-
-            _channel.QueueDeclare(
-                queue: "fetch_queue",
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
-
-            _channel.QueueDeclare(
-                queue: "response_queue",
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
+            _channel.QueueDeclare("rpc_request_queue", false, false, false, null);
+            _channel.BasicQos(0, 1, false);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var requestConsumer = new EventingBasicConsumer(_channel);
-            var fetchConsumer = new EventingBasicConsumer(_channel);
+            var consumer = new EventingBasicConsumer(_channel);
 
-            requestConsumer.Received += async (model, ea) =>
+            consumer.Received += async (model, ea) =>
             {
+                string response = string.Empty;
                 var body = ea.Body.ToArray();
-                var messageJson = Encoding.UTF8.GetString(body);
-                var processedImage = JsonSerializer.Deserialize<ProcessedImage>(messageJson);
+                var props = ea.BasicProperties;
+                var replyProps = _channel.CreateBasicProperties();
+                replyProps.CorrelationId = props.CorrelationId;
 
                 try
                 {
-                    if (processedImage != null)
+                    var message = Encoding.UTF8.GetString(body);
+
+                    var processedImage = JsonSerializer.Deserialize<ProcessedImage>(message);
+                    if (processedImage.Base64Image != null)
                     {
                         await _mongoDBService.SaveImageAsync(processedImage);
+                        response = JsonSerializer.Serialize(new List<ProcessedImage>());
                     }
                     else
                     {
-                        Console.WriteLine("Failed to deserialize ProcessedImage.");
+                        var fetchRequest = JsonSerializer.Deserialize<Dictionary<string, int>>(message);
+                        if (fetchRequest != null && fetchRequest.TryGetValue("id", out int userId))
+                        {
+                            var images = await _mongoDBService.GetAllImagesAsync(userId);
+                            response = JsonSerializer.Serialize(images);
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error processing image: {ex.Message}");
+                    response = JsonSerializer.Serialize(new List<ProcessedImage>());
+                    Console.WriteLine($"Error processing request: {ex.Message}");
+                }
+                finally
+                {
+                    var responseBytes = Encoding.UTF8.GetBytes(response);
+                    _channel.BasicPublish(
+                        exchange: "",
+                        routingKey: props.ReplyTo,
+                        basicProperties: replyProps,
+                        body: responseBytes);
+
+                    _channel.BasicAck(ea.DeliveryTag, false);
                 }
             };
 
-            fetchConsumer.Received += async (model, ea) =>
-            {
-                var images = await _mongoDBService.GetAllImagesAsync();
-                var responseBody = JsonSerializer.SerializeToUtf8Bytes(images);
-
-                _channel.BasicPublish("", "response_queue", null, responseBody);
-            };
-
-            _channel.BasicConsume("request_queue", true, requestConsumer);
-            _channel.BasicConsume("fetch_queue", true, fetchConsumer);
+            _channel.BasicConsume(
+                queue: "rpc_request_queue",
+                autoAck: false,
+                consumer: consumer);
 
             while (!stoppingToken.IsCancellationRequested)
             {
                 await Task.Delay(1000, stoppingToken);
             }
         }
-
-
 
         public override void Dispose()
         {
@@ -97,5 +89,4 @@ namespace Service2.Worker
             base.Dispose();
         }
     }
-
 }

@@ -34,7 +34,6 @@ export class PhotoComponent {
     }
   }
 
-  // photo.component.ts
   uploadImage() {
     if (this.selectedImage) {
       const formData = new FormData();

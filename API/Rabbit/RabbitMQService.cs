@@ -1,91 +1,82 @@
-﻿using Microsoft.AspNetCore.Connections;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System.Text;
+﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using RabbitMQ.Client;
-using System.Text.Json;
+using System.Collections.Concurrent;
 using System.Text;
-using IConnectionFactory = RabbitMQ.Client.IConnectionFactory;
+using System.Text.Json;
+
 namespace API.Rabbit
 {
     public class RabbitMQService : IRabbitMQService, IDisposable
     {
         private readonly IConnection _connection;
-        private readonly RabbitMQ.Client.IModel _channel;
-        private const string RequestQueue = "request_queue";
-        private const string FetchQueue = "fetch_queue";
-        private const string ResponseQueue = "response_queue";
-
-        //public RabbitMQService(IConnectionFactory connectionFactory)
-        //{
-        //    _connection = connectionFactory.CreateConnection();
-        //    _channel = _connection.CreateModel();
-
-        //    _channel.QueueDeclare(RequestQueue, durable: true, exclusive: false, autoDelete: false);
-        //    _channel.QueueDeclare(FetchQueue, durable: true, exclusive: false, autoDelete: false);
-        //    _channel.QueueDeclare(ResponseQueue, durable: true, exclusive: false, autoDelete: false);
-        //}
+        private readonly IModel _channel;
+        private readonly string _replyQueueName;
+        private readonly ConcurrentDictionary<string, TaskCompletionSource<List<ProcessedImage>>> _callbackMapper = new();
+        private readonly IBasicProperties _props;
+        private readonly EventingBasicConsumer _consumer;
 
         public RabbitMQService(IConnectionFactory connectionFactory)
         {
             _connection = connectionFactory.CreateConnection();
             _channel = _connection.CreateModel();
 
-            _channel.QueueDeclare(
-                queue: "request_queue",
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
+            _channel.QueueDeclare("rpc_request_queue", false, false, false, null);
+            _replyQueueName = _channel.QueueDeclare().QueueName;
 
-            _channel.QueueDeclare(
-                queue: "fetch_queue",
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
+            _props = _channel.CreateBasicProperties();
+            _props.ReplyTo = _replyQueueName;
 
-            _channel.QueueDeclare(
-                queue: "response_queue",
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
-        }
-
-
-
-
-        public void RequestStoredImages()
-        {
-            var message = new { Request = "FetchAll" };
-            var body = JsonSerializer.SerializeToUtf8Bytes(message);
-            _channel.BasicPublish("", FetchQueue, null, body);
-        }
-
-        public List<ProcessedImage> ReceiveProcessedImages()
-        {
-            var result = new List<ProcessedImage>();
-            var consumer = new EventingBasicConsumer(_channel);
-
-            var received = false;
-            consumer.Received += (model, ea) =>
+            _consumer = new EventingBasicConsumer(_channel);
+            _consumer.Received += (model, ea) =>
             {
+                if (!_callbackMapper.TryRemove(ea.BasicProperties.CorrelationId, out var tcs))
+                    return;
+
                 var response = Encoding.UTF8.GetString(ea.Body.ToArray());
-                var processedImage = JsonSerializer.Deserialize<List<ProcessedImage>>(response);
-                result = (processedImage);
+                var images = JsonSerializer.Deserialize<List<ProcessedImage>>(response);
+                tcs.TrySetResult(images ?? new List<ProcessedImage>());
             };
 
-            _channel.BasicConsume("response_queue", true, consumer);
+            _channel.BasicConsume(consumer: _consumer,
+                                queue: _replyQueueName,
+                                autoAck: true);
+        }
 
+        public async Task SendImageForProcessingAsync(ProcessedImage processedImage)
+        {
+            var correlationId = Guid.NewGuid().ToString();
+            var tcs = new TaskCompletionSource<List<ProcessedImage>>();
+            _callbackMapper.TryAdd(correlationId, tcs);
 
-            var timeout = DateTime.Now.AddSeconds(10);
-            while (!received && DateTime.Now < timeout)
-            {
-                Thread.Sleep(100);
-            }
+            _props.CorrelationId = correlationId;
+            var messageBytes = JsonSerializer.SerializeToUtf8Bytes(processedImage);
 
-            return result;
+            _channel.BasicPublish(
+                exchange: "",
+                routingKey: "rpc_request_queue",
+                basicProperties: _props,
+                body: messageBytes);
+
+            await tcs.Task;
+        }
+
+        public async Task<List<ProcessedImage>> RequestStoredImagesAsync(int id)
+        {
+            var correlationId = Guid.NewGuid().ToString();
+            var tcs = new TaskCompletionSource<List<ProcessedImage>>();
+            _callbackMapper.TryAdd(correlationId, tcs);
+
+            _props.CorrelationId = correlationId;
+            var message = new { id };
+            var messageBytes = JsonSerializer.SerializeToUtf8Bytes(message);
+
+            _channel.BasicPublish(
+                exchange: "",
+                routingKey: "rpc_request_queue",
+                basicProperties: _props,
+                body: messageBytes);
+
+            return await tcs.Task;
         }
 
         public void Dispose()
@@ -93,14 +84,5 @@ namespace API.Rabbit
             _channel?.Dispose();
             _connection?.Dispose();
         }
-
-        void IRabbitMQService.SendImageForProcessing(ProcessedImage processedImage)
-        {
-            var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(processedImage));
-
-            _channel.BasicPublish("", RequestQueue, null, body);
-
-        }
     }
-
 }

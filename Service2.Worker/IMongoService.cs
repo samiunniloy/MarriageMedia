@@ -10,6 +10,6 @@ namespace Service2.Worker
     public interface IMongoService
     {
         Task SaveImageAsync(ProcessedImage image);
-        Task<List<ProcessedImage>> GetAllImagesAsync();
+        Task<List<ProcessedImage>> GetAllImagesAsync(int id);
     }
 }

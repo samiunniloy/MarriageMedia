@@ -24,9 +24,9 @@ namespace Service2.Worker
             await _images.InsertOneAsync(image);
         }
 
-        public async Task<List<ProcessedImage>> GetAllImagesAsync()
+        public async Task<List<ProcessedImage>> GetAllImagesAsync(int id)
         {
-            return await _images.Find(_ => true).ToListAsync();
+            return await _images.Find(img=>img.UserId==id).ToListAsync();
         }
     }
 }

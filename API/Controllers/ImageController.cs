@@ -17,7 +17,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult UploadImage([FromBody] ImageUploadRequest request)
+        public async Task<IActionResult> UploadImage([FromBody] ImageUploadRequest request)
         {
             if (string.IsNullOrEmpty(request.Base64Image))
             {
@@ -40,9 +40,9 @@ namespace API.Controllers
                 Date = DateTime.UtcNow
             };
 
-            _rabbitMQService.SendImageForProcessing(processedImage);
+            await _rabbitMQService.SendImageForProcessingAsync(processedImage);
 
-            return Ok(new { message = "Image sent for processing" });
+            return Ok(new { message = "Image processed successfully" });
         }
 
         public class ImageUploadRequest
@@ -52,10 +52,12 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllImages()
-        {
-            _rabbitMQService.RequestStoredImages();
-            var images = _rabbitMQService.ReceiveProcessedImages();
+        public async Task<IActionResult> GetAllImages()
+        {   
+
+             var userId=User.GetUserId();
+            var images = await _rabbitMQService.RequestStoredImagesAsync(userId);
+
             return Ok(images);
         }
     }
