@@ -1,5 +1,6 @@
 ﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using Service2.Worker.MongoDb;
 using System.Text;
 using System.Text.Json;
 
@@ -9,13 +10,12 @@ namespace Service2.Worker
     {
         private readonly IConnection _connection;
         private readonly IModel _channel;
-        private readonly IMongoService _mongoDBService;
-
-        public ImageProcessingWorker(IConnectionFactory connectionFactory, IMongoService mongoDBService)
+        private readonly IProcessedImageRepository _imageRepository;
+        public ImageProcessingWorker(IConnectionFactory connectionFactory, IProcessedImageRepository imageRepository)
         {
             _connection = connectionFactory.CreateConnection();
             _channel = _connection.CreateModel();
-            _mongoDBService = mongoDBService;
+            _imageRepository = imageRepository;
 
             _channel.QueueDeclare("rpc_request_queue", false, false, false, null);
             _channel.BasicQos(0, 1, false);
@@ -40,7 +40,7 @@ namespace Service2.Worker
                     var processedImage = JsonSerializer.Deserialize<ProcessedImage>(message);
                     if (processedImage.Base64Image != null)
                     {
-                        await _mongoDBService.SaveImageAsync(processedImage);
+                        await _imageRepository.InsertOneAsync(processedImage);
                         response = JsonSerializer.Serialize(new List<ProcessedImage>());
                     }
                     else
@@ -48,7 +48,7 @@ namespace Service2.Worker
                         var fetchRequest = JsonSerializer.Deserialize<Dictionary<string, int>>(message);
                         if (fetchRequest != null && fetchRequest.TryGetValue("id", out int userId))
                         {
-                            var images = await _mongoDBService.GetAllImagesAsync(userId);
+                            var images = await _imageRepository.GetByUserIdAsync(userId);
                             response = JsonSerializer.Serialize(images);
                         }
                     }
