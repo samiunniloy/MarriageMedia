@@ -43,12 +43,13 @@
             <td>
                 
                 <div>
-                    <img [src]="isOutbox ?
-                     (message.recipientPhotoUrl || './assets/user.png') :
-                     (message.senderPhotoUrl || './assets/user.png')"
-                         alt="image of user" class="rounded-circle me-2" >
-                    <strong>{{ container === 'Outbox' ?
-                        message.recipientUserName : message.senderUserName }}</strong>
+                    <!--      <img [src]="isOutbox ?
+     (message.recipientPhotoUrl || './assets/user.png') :
+     (message.senderPhotoUrl || './assets/user.png')"
+         alt="image of user" class="rounded-circle me-2" >
+    <strong>{{ container === 'Outbox' ?
+        message.recipientUserName : message.senderUserName }}</strong> -->
+                    <h1 style="font-size: 16px;">{{ message.senderUserName }} to {{ message.recipientUserName }}</h1>
                 </div>
 
             </td>

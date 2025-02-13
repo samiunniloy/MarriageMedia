@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace API.Controllers
@@ -36,7 +37,9 @@ namespace API.Controllers
         [HttpGet("{username}")]
         public async Task<ActionResult<MemberDto>> GetMemberAsync(string username)
         {
-            var user = await cachedRepository.GetMemberAsync(username);
+            var name = username.Substring(0, username.IndexOf('['));
+
+            var user = await cachedRepository.GetMemberAsync(name);
             if (user == null)
             {
                 return NotFound("name doesnt exist");

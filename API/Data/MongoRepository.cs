@@ -79,7 +79,6 @@ namespace API.Data.Repositories
             await _collection.DeleteOneAsync(filter);
         }
 
-        // Helper methods to get/set Id using reflection
         private int GetId(TEntity entity)
         {
             var property = typeof(TEntity).GetProperty("Id");

@@ -61,9 +61,12 @@ namespace API.Controllers
         public async Task<ActionResult<IEnumerable<MessageDto>>> GetMessagesForUser(
             [FromQuery] MessageParams messageParams)
         {
+
             messageParams.Username = User.GetUsername();
             var messages = await _messageRepository.GetMessagesForUser(messageParams);
-          //  Response.AddPaginationHeader(messages);
+
+          
+            //Response.AddPaginationHeader(messages);
             return Ok(messages);
         }
 
