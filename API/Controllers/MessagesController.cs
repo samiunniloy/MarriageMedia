@@ -103,5 +103,10 @@ namespace API.Controllers
 
             return BadRequest("Problem deleting message");
         }
+        static string GetStringBeforeBracket(string input)
+        {
+            int index = input.IndexOf('[');
+            return index != -1 ? input.Substring(0, index) : input;
+        }
     }
 }

@@ -37,7 +37,7 @@ namespace API.Controllers
         [HttpGet("{username}")]
         public async Task<ActionResult<MemberDto>> GetMemberAsync(string username)
         {
-            var name = username.Substring(0, username.IndexOf('['));
+            var name = GetStringBeforeBracket(username);
 
             var user = await cachedRepository.GetMemberAsync(name);
             if (user == null)
@@ -114,6 +114,11 @@ namespace API.Controllers
 
             return BadRequest("Problem adding photo");
         }
-        
+        static string GetStringBeforeBracket(string input)
+        {
+            int index = input.IndexOf('[');
+            return index != -1 ? input.Substring(0, index) : input;
+        }
+
     }
 }
